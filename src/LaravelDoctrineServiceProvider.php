@@ -149,7 +149,7 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
     {
         $this->app[AuthManager::class]->extend('doctrine', function ($app) {
             return new DoctrineUserProvider(
-                $app['Illuminate\Hashing\HasherInterface'],
+                $app['Illuminate\Contracts\Hashing\Hasher'],
                 $app[EntityManager::class],
                 config('auth.model')
             );
