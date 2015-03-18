@@ -6,75 +6,92 @@ use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\EntityManagerInterface;
 use Illuminate\Validation\PresenceVerifierInterface;
 
-class DoctrinePresenceVerifier implements PresenceVerifierInterface {
+class DoctrinePresenceVerifier implements PresenceVerifierInterface
+{
+	protected $entityManager;
 
-    protected $entityManager;
+	public function __construct(EntityManagerInterface $entityManager)
+	{
+		$this->entityManager = $entityManager;
+	}
+	/**
+	 * Count the number of objects in a collection having the given value.
+	 *
+	 * @param  string $collection
+	 * @param  string $column
+	 * @param  string $value
+	 * @param  int $excludeId
+	 * @param  string $idColumn
+	 * @param  array $extra
+	 * @return int
+	 */
+	public function getCount($collection, $column, $value, $excludeId = null, $idColumn = null, array $extra = array())
+	{
+		$queryParts = ['SELECT COUNT(*) as usercount FROM', $collection, 'WHERE', "$column = ?"];
 
-    public function __construct(EntityManagerInterface $entityManager) {
-        $this->entityManager = $entityManager;
-    }
+		if (!is_null($excludeId) && $excludeId != 'NULL')  {
+			$queryParts[] = 'AND '.($idColumn ?: 'id').' <> ?';
+		}
 
-    /**
-     * Count the number of objects in a collection having the given value.
-     * @param  string $collection
-     * @param  string $column
-     * @param  string $value
-     * @param  int $excludeId
-     * @param  string $idColumn
-     * @param  array $extra
-     * @return int
-     */
-    public function getCount($collection, $column, $value, $excludeId = null, $idColumn = null, array $extra = []) {
-        $queryParts = ['SELECT COUNT(*) FROM', $collection, 'WHERE', "$column = ?"];
+		foreach ($extra as $key => $extraValue) {
+			$queryParts[] = "AND $key = ?";
+		}
 
-        if ( ! is_null($excludeId) && $excludeId != 'NULL')
-            $queryParts[] = 'AND ' . ($idColumn ?: 'id') . ' <> ?';
+		$query = $this->createQueryFrom($queryParts);
+		$query->setParameter(1, $value);
 
-        foreach ($extra as $key => $extraValue)
-            $queryParts[] = "AND $key = ?";
+		if (!is_null($excludeId) && $excludeId != 'NULL')  {
+			$query->setParameter(2, $excludeId);
+		}
 
-        $query = $this->createQueryFrom($queryParts);
-        $query->setParameter(1, $value);
+		foreach ($extra as $key => $extraValue) {
+			$query->setParameter($key + 3, $extraValue);
+		}
 
-        if ( ! is_null($excludeId) && $excludeId != 'NULL')
-            $query->setParameter(2, $excludeId);
+		return $query->getSingleScalarResult();
+	}
 
-        foreach ($extra as $key => $extraValue)
-            $query->setParameter($key + 3, $extraValue);
+	/**
+	 * Count the number of objects in a collection with the given values.
+	 *
+	 * @param  string $collection
+	 * @param  string $column
+	 * @param  array $values
+	 * @param  array $extra
+	 * @return int
+	 */
+	public function getMultiCount($collection, $column, array $values, array $extra = array())
+	{
+		$queryParts = ['SELECT COUNT(*) as usercount FROM', $collection, 'WHERE', "$column IN (?)"];
 
-        return $query->getSingleScalarResult();
-    }
+		foreach ($extra as $key => $extraValue) {
+			$queryParts[] = "AND $key = ?";
+		}
 
-    /**
-     * Count the number of objects in a collection with the given values.
-     * @param  string $collection
-     * @param  string $column
-     * @param  array $values
-     * @param  array $extra
-     * @return int
-     */
-    public function getMultiCount($collection, $column, array $values, array $extra = []) {
-        $queryParts = ['SELECT COUNT(*) FROM', $collection, 'WHERE', "$column IN (?)"];
+		$query = $this->createQueryFrom($queryParts);
+		$query->setParameter(1, implode(',', $values));
 
-        foreach ($extra as $key => $extraValue)
-            $queryParts[] = "AND $key = ?";
+		foreach ($extra as $key => $extraValue) {
+			$query->setParameter($key + 2, $extraValue);
+		}
 
-        $query = $this->createQueryFrom($queryParts);
-        $query->setParameter(1, implode(',', $values));
+		return $query->count();
+	}
 
-        foreach ($extra as $key => $extraValue)
-            $query->setParameter($key + 2, $extraValue);
+	/**
+	 * Creates a new Doctrine native query based on the query parts array.
+	 *
+	 * @param array $queryParts
+	 * @return mixed
+	 */
+	private function createQueryFrom(array $queryParts = [])
+	{
+		$rsm = new ResultSetMapping();
 
-        return $query->count();
-    }
+		//If we don't set up a scalar result mapping, we'll always get back null from the hydrateColumnInfo function in
+		//the abstract class Doctrine\ORM\Internal\Hydration\AbstractHydrator, which all the hydrators extend.
+		$rsm = $rsm->addScalarResult('usercount','usercount','integer');
 
-    /**
-     * Creates a new Doctrine native query based on the query parts array.
-     * @param array $queryParts
-     * @return mixed
-     */
-    private function createQueryFrom(array $queryParts = []) {
-        $rsm = new ResultSetMapping;
-        return $this->entityManager->createNativeQuery(implode(' ', $queryParts), $rsm);
-    }
+		return $this->entityManager->createNativeQuery(implode(' ', $queryParts), $rsm);
+	}
 }
