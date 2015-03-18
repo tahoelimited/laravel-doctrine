@@ -2,37 +2,21 @@
 
 class SqliteMapper implements Mapper {
 
-    /**
-     * Map the L4 configuration array to a sqlite-friendly doctrine configuration.
-     * @param array $configuration
-     * @return array
-     */
     public function map(array $configuration) {
         $sqliteConfig = [
             'driver' => 'pdo_sqlite',
             'user' => @$configuration['username'],
-            'password' => @$configuration['password'],
-            'prefix' => @$configuration['prefix'] ? $configuration['prefix'] : null
+            'password' => @$configuration['password']
         ];
-        $this->databaseLocation($configuration, $sqliteConfig);
+        $this->determineDatabaseLocation($configuration, $sqliteConfig);
         return $sqliteConfig;
     }
 
-    /**
-     * Is only suitable for sqlite configuration mapping.
-     * @param array $configuration
-     * @return bool
-     */
     public function isAppropriateFor(array $configuration) {
         return $configuration['driver'] == 'sqlite';
     }
 
-    /**
-     * Determines the location of the database and appends this to the sqlite configuration.
-     * @param $configuration
-     * @param $sqliteConfig
-     */
-    private function databaseLocation($configuration, &$sqliteConfig) {
+    private function determineDatabaseLocation($configuration, &$sqliteConfig) {
         if ($configuration['database'] == ':memory:')
             $sqliteConfig['memory'] = true;
         else

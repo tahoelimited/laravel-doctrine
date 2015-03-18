@@ -4,7 +4,7 @@ return [
     'simple_annotations' => false,
 
     'metadata' => [
-        //
+        // Paths to entities here...
     ],
 
     'proxy' => [
