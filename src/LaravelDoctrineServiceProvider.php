@@ -215,9 +215,9 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
     private function registerManagerRegistry()
     {
         $this->app->singleton(IlluminateRegistry::class, function ($app) {
-            $config = $app['config']['doctrine::doctrine'];
-            $databaseConnections = $app['config']['database']['connections'];
-            $defaultDatabase = $app['config']['database']['default'];
+            $config = config('doctrine');
+            $databaseConnections = config('database')['connections'];
+            $defaultDatabase = config('database')['default'];
 
             $config = $this->mapEntityManagers($config, $defaultDatabase);
 
@@ -257,7 +257,7 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
         $this->app[AuthManager::class]->extend('doctrine', function ($app) {
             return new DoctrineUserProvider(
                 $app['Illuminate\Contracts\Hashing\Hasher'],
-                $app[EntityManager::class],
+                $app[IlluminateRegistry::class],
                 config('auth.model')
             );
         });
