@@ -112,12 +112,12 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
         $repository = 'Doctrine\ORM\EntityRepository',
         $logger = null
     ) {
-        $metadata = Setup::createAnnotationMetadataConfiguration(
+        $metadata = Setup::createYAMLMetadataConfiguration(//Setup::createAnnotationMetadataConfiguration(
             $paths,
             $isDevMode,
             $proxyDir,
-            $cache,
-            $useSimpleAnnotationReader
+            $cache//,
+        //$useSimpleAnnotationReader
         );
 
         $metadata->addFilter('trashed', TrashedFilter::class);
