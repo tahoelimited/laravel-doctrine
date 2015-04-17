@@ -58,7 +58,13 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             'Mitch\LaravelDoctrine\Console\GenerateProxiesCommand',
             'Mitch\LaravelDoctrine\Console\SchemaCreateCommand',
             'Mitch\LaravelDoctrine\Console\SchemaUpdateCommand',
-            'Mitch\LaravelDoctrine\Console\SchemaDropCommand'
+            'Mitch\LaravelDoctrine\Console\SchemaDropCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearCollectionRegionCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearMetadataCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearEntityRegionCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearQueryCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearQueryRegionCommand',
+            'Mitch\LaravelDoctrine\Console\CacheClearResultCommand'
         ]);
     }
 
