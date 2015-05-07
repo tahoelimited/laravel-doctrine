@@ -10,7 +10,7 @@ class SqlMapper implements Mapper {
             'user' => $configuration['username'],
             'password' => $configuration['password'],
             'charset' => $configuration['charset'],
-            'prefix' => $configuration['prefix']
+            'prefix' => array_get($configuration, 'prefix')
         ];
     }
 
