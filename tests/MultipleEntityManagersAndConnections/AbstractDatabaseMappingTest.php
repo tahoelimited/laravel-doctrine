@@ -84,10 +84,12 @@ abstract class AbstractDatabaseMappingTest extends \PHPUnit_Framework_TestCase
     protected function getBasicDoctrineConfiguration()
     {
         return [
-            'simple_annotations' => false,
-
-            'metadata' => [
-                __DIR__.DIRECTORY_SEPARATOR.'Models',
+            'metadata'           => [
+                'driver' => 'annotation',
+                'simple' => false,
+                'paths'  => [
+                    __DIR__.DIRECTORY_SEPARATOR.'Models',
+                ]
             ],
 
             'proxy' => [

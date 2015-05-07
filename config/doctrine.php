@@ -1,10 +1,9 @@
 <?php
 
 return [
-    'simple_annotations' => false,
-
-    'metadata' => [
-        // Paths to entities here...
+    'metadata'           => [
+        'driver' => 'annotation',
+        'simple' => false
     ],
 
     'proxy' => [

@@ -8,6 +8,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
+use Doctrine\ORM\Configuration as DoctrineConfig;
+use Doctrine\ORM\Mapping\Driver\YamlDriver;
+use Doctrine\ORM\Mapping\Driver\XmlDriver;
+use Doctrine\ORM\Mapping\Driver\SimplifiedXmlDriver;
+use Doctrine\ORM\Mapping\Driver\SimplifiedYamlDriver;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\ServiceProvider;
 use Mitch\LaravelDoctrine\Cache;
@@ -19,6 +24,7 @@ use Mitch\LaravelDoctrine\EventListeners\SoftDeletableListener;
 use Mitch\LaravelDoctrine\EventListeners\TablePrefix;
 use Mitch\LaravelDoctrine\Filters\TrashedFilter;
 use Mitch\LaravelDoctrine\Validation\DoctrinePresenceVerifier;
+use RuntimeException;
 
 class LaravelDoctrineServiceProvider extends ServiceProvider
 {
@@ -108,22 +114,19 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
     }
 
     private function createMetadataConfiguration(
-        array $paths,
+        array $config,
         $isDevMode = false,
         $proxyDir = null,
         \Doctrine\Common\Cache\Cache $cache = null,
-        $useSimpleAnnotationReader = true,
         $autoGenerateProxyClasses = false,
         $proxyNamespace = null,
         $repository = 'Doctrine\ORM\EntityRepository',
         $logger = null
     ) {
-        $metadata = Setup::createAnnotationMetadataConfiguration(
-            $paths,
+        $metadata = Setup::createConfiguration(
             $isDevMode,
             $proxyDir,
-            $cache,
-            $useSimpleAnnotationReader
+            $cache
         );
 
         $metadata->addFilter('trashed', TrashedFilter::class);
@@ -134,7 +137,55 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
         $metadata->setDefaultRepositoryClassName($repository);
         $metadata->setSQLLogger($logger);
 
+        $driver = $this->createMetadataDriver($metadata, $config);
+        $metadata->setMetadataDriverImpl($driver);
+
         return $metadata;
+    }
+
+    /**
+     * Takes care of building any drivers we wish to support.
+     *
+     * Note: Chain is handled above, it's special.
+     *
+     * @param DoctrineConfig $config
+     * @param array $driverConfig
+     * @return \Doctrine\Common\Persistence\Mapping\Driver\MappingDriver
+     */
+    protected function createMetadataDriver(DoctrineConfig $config, $driverConfig)
+    {
+        $simple = array_get($driverConfig, 'simple', false);
+        $paths = array_get($driverConfig, 'paths', base_path('resources/doctrine'));
+        $extension = array_get($driverConfig, 'extension');
+
+        switch ($driver = array_get($driverConfig, 'driver')) {
+            case 'annotation':
+                return $config->newDefaultAnnotationDriver(
+                    array_get($driverConfig, 'paths', app_path()),
+                    $simple
+                );
+                break;
+            case 'yaml':
+                if ($simple) {
+                    return new SimplifiedYamlDriver($paths, $extension);
+                } else {
+                    return new YamlDriver($paths, $extension);
+                }
+                break;
+            case 'xml':
+                if ($simple) {
+                    return new SimplifiedXmlDriver($paths, $extension);
+                } else {
+                    return new XmlDriver($paths, $extension);
+                }
+                break;
+            case null:
+                throw new RuntimeException('Metadata driver has unspecified type.');
+                break;
+            default:
+                throw new RuntimeException(sprintf('Unsupported driver: %s', $driver));
+                break;
+        }
     }
 
     private function mapEntityManagers($config, $defaultDatabase)
@@ -175,7 +226,6 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             $databaseConfig = $databaseConnections[$connectionName];
             $cacheProvider = isset($managerConfig['cache_provider']) ? $managerConfig['cache_provider'] : $config['cache_provider'];
             $repository = isset($managerConfig['repository']) ? $managerConfig['repository'] : $config['repository'];
-            $simpleAnnotations = isset($managerConfig['simple_annotations']) ? $managerConfig['simple_annotations'] : $config['simple_annotations'];
             $logger = isset($managerConfig['logger']) ? $managerConfig['logger'] : $config['logger'];
 
             $metadata = $this->createMetadataConfiguration(
@@ -183,7 +233,6 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
                 $debug,
                 $config['proxy']['directory'],
                 $cacheManager->getCache($cacheProvider),
-                $simpleAnnotations,
                 $config['proxy']['auto_generate'],
                 $proxyNamespace,
                 $repository,
