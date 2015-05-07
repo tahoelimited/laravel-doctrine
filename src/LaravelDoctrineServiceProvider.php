@@ -64,7 +64,7 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             'Mitch\LaravelDoctrine\Console\CacheClearEntityRegionCommand',
             'Mitch\LaravelDoctrine\Console\CacheClearQueryCommand',
             'Mitch\LaravelDoctrine\Console\CacheClearQueryRegionCommand',
-            'Mitch\LaravelDoctrine\Console\CacheClearResultCommand'
+            'Mitch\LaravelDoctrine\Console\CacheClearResultCommand',
             'Mitch\LaravelDoctrine\Console\ConvertMapping',
             'Mitch\LaravelDoctrine\Console\Migrations\GenerateCommand',
             'Mitch\LaravelDoctrine\Console\Migrations\DiffCommand',
