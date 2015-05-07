@@ -65,6 +65,14 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             'Mitch\LaravelDoctrine\Console\CacheClearQueryCommand',
             'Mitch\LaravelDoctrine\Console\CacheClearQueryRegionCommand',
             'Mitch\LaravelDoctrine\Console\CacheClearResultCommand'
+            'Mitch\LaravelDoctrine\Console\ConvertMapping',
+            'Mitch\LaravelDoctrine\Console\Migrations\GenerateCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\DiffCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\MigrateCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\ExecuteCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\LatestCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\StatusCommand',
+            'Mitch\LaravelDoctrine\Console\Migrations\VersionCommand',
         ]);
     }
 
