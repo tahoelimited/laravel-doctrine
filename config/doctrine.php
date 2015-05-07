@@ -1,10 +1,9 @@
 <?php
 
 return [
-    'simple_annotations' => false,
-
     'metadata' => [
-        // Paths to entities here...
+        'driver' => 'annotation',
+        'simple' => false
     ],
 
     'proxy' => [
@@ -32,5 +31,10 @@ return [
 
     'repositoryFactory' => null,
 
-    'logger' => null
+    'logger' => null,
+
+    'migrations' => [
+        'directory' => base_path('database/doctrine/migrations'),
+        'namespace' => 'App\Migrations'
+    ]
 ];
