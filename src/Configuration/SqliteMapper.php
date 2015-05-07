@@ -6,7 +6,8 @@ class SqliteMapper implements Mapper {
         $sqliteConfig = [
             'driver' => 'pdo_sqlite',
             'user' => @$configuration['username'],
-            'password' => @$configuration['password']
+            'password' => @$configuration['password'],
+            'prefix' => @$configuration['prefix']
         ];
         $this->determineDatabaseLocation($configuration, $sqliteConfig);
         return $sqliteConfig;
