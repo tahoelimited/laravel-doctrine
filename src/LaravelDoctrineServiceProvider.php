@@ -228,6 +228,22 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             $repository = isset($managerConfig['repository']) ? $managerConfig['repository'] : $config['repository'];
             $logger = isset($managerConfig['logger']) ? $managerConfig['logger'] : $config['logger'];
 
+            if(!isset($managerConfig['metadata']['paths'])){ //backwards compatibility
+                $paths = [];
+                foreach($managerConfig['metadata'] as $potentialPath){
+                    if(is_dir($potentialPath)){
+                        $paths[] = $potentialPath;
+                    }
+                }
+                $managerConfig['metadata']['paths'] = $paths;
+            }
+            if(!isset($managerConfig['metadata']['simple'])){ //backwards compatibility
+               $managerConfig['metadata']['simple'] = isset($managerConfig['simple_annotations']) ? $managerConfig['simple_annotations'] : $config['simple_annotations'];
+            }
+            if(!isset($managerConfig['metadata']['driver'])){ //backwards compatibility
+                $managerConfig['metadata']['driver'] = 'annotation';
+            }
+
             $metadata = $this->createMetadataConfiguration(
                 $managerConfig['metadata'],
                 $debug,
