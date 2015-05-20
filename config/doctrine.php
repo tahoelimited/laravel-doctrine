@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'metadata'           => [
+    'metadata' => [
         'driver' => 'annotation',
         'simple' => false
     ],
@@ -31,5 +31,10 @@ return [
 
     'repositoryFactory' => null,
 
-    'logger' => null
+    'logger' => null,
+
+    'migrations' => [
+        'directory' => base_path('database/doctrine/migrations'),
+        'namespace' => 'App\Migrations'
+    ]
 ];
