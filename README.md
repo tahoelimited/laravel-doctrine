@@ -6,12 +6,6 @@ A **forked implementation of [laravel-doctrine](https://github.com/mitchellvanw/
 
 As this is a **forked version** [the documentation](https://github.com/mitchellvanw/laravel-doctrine) still applies to most of the package. Please read [the original documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) and [README](https://github.com/mitchellvanw/laravel-doctrine) before using this fork.
 
-### Issues?
-
-If you have issues **related to changes made in this forked version** please open an issue **[on this repository](https://github.com/FoxxMD/laravel-doctrine/issues)**.
-
-If your issue is general or related to functionality that exists in the original repo [please direct your questions there](https://github.com/mitchellvanw/laravel-doctrine/issues).
-
 ## Forked Changes Improvements and Functionality
 
 1. [What's New?](#whats-new)
@@ -19,6 +13,7 @@ If your issue is general or related to functionality that exists in the original
 3. [Using different metadata drivers](#using-different-metadata-drivers)
 4. [Using multiple entity managers](#using-multiple-entity-managers)
 5. [New Doctrine Configuration Reference](#new-doctrine-configuration-reference)
+6. [Issues and Contributing](#issues-and-contributing)
 
 
 ## What's New?
@@ -31,9 +26,9 @@ If your issue is general or related to functionality that exists in the original
 
 **New Functionality**
 
-* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks @npmarrin !)
-* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks @evopix !)
-* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks @evopix !)
+* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks [npmarrin!](https://github.com/npmarrin))
+* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks [evopix!](https://github.com/evopix))
+* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks [evopix!](https://github.com/evopix))
 * Prefixes for sqlite config mapping
 * Added cache:clear artisan commands
 * **Backwards compatibility with all current doctrine configs using annotations**
@@ -188,6 +183,20 @@ return [
     //'logger' => new \Doctrine\DBAL\Logging\EchoSQLLogger()
 ];
 ```
+
+#Issues and Contributing
+
+## Issues?
+
+If you have issues **related to changes made in this forked version** please open an issue **[on this repository](https://github.com/FoxxMD/laravel-doctrine/issues)**.
+
+If your issue is general or related to functionality that exists in the original repo [please direct your questions there](https://github.com/mitchellvanw/laravel-doctrine/issues).
+
+## Contributing and Fork Status
+
+This fork **is not an official implementation of laravel-doctrine for Laravel 5** so I cannot gaurantee that it will continue to work or or be maintained in the future as Laravel changes, HOWEVER I use it on a daily basis with production code and so will keep it up to date as long as it is relevant for me.
+
+I am happy to accept PRs and any other contributions from the community and will respond in a timely manner. I am open to accepting collaborators as well.
 
 ## License
 
