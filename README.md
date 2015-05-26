@@ -6,7 +6,7 @@ A **forked implementation of [laravel-doctrine](https://github.com/mitchellvanw/
 
 As this is a **forked version** [the documentation](https://github.com/mitchellvanw/laravel-doctrine) still applies to most of the package. Please read [the original documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) and [README](https://github.com/mitchellvanw/laravel-doctrine) before using this fork.
 
-## Forked Changes Improvements and Functionality
+## Forked Changes, Improvements, and Functionality
 
 1. [What's New?](#whats-new)
 2. [Installation](#installation)
