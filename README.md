@@ -27,9 +27,9 @@ As this is a **forked version** [the documentation](https://github.com/mitchellv
 
 **New Functionality**
 
-* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks [npmarrin!](https://github.com/npmarrin))
-* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks [evopix!](https://github.com/evopix))
-* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks [evopix!](https://github.com/evopix))
+* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks [**npmarrin!**](https://github.com/npmarrin))
+* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks [**evopix!**](https://github.com/evopix))
+* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks [**evopix!**](https://github.com/evopix))
 * Prefixes for sqlite config mapping
 * Added cache:clear artisan commands
 * **Backwards compatibility with all current doctrine configs using annotations**
