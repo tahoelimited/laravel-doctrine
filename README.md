@@ -1,50 +1,58 @@
-# Doctrine 2 for Laravel
+# Doctrine 2 for Laravel 5
 
-[![Latest Stable Version](https://poser.pugx.org/mitchellvanw/laravel-doctrine/version.png)](https://packagist.org/packages/mitchellvanw/laravel-doctrine)
-[![License](https://poser.pugx.org/mitchellvanw/laravel-doctrine/license.png)](https://packagist.org/packages/mitchellvanw/laravel-doctrine)
-[![Total Downloads](https://poser.pugx.org/mitchellvanw/laravel-doctrine/downloads.png)](https://packagist.org/packages/mitchellvanw/laravel-doctrine)
-
-A Doctrine 2 implementation that melts with Laravel 5.
+A **forked implementation of [laravel-doctrine](https://github.com/mitchellvanw/laravel-doctrine)** that melts with Laravel 5.
 
 ## Documentation
 
-Begin reading [the full documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) here or go to a specific chapter right away.
+As this is a **forked version** [the documentation](https://github.com/mitchellvanw/laravel-doctrine) still applies to most of the package. Please read [the original documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) and [README](https://github.com/mitchellvanw/laravel-doctrine) before using this fork.
 
-1. [Installation](https://github.com/mitchellvanw/laravel-doctrine/wiki/Installation)
-2. [How It Works](https://github.com/mitchellvanw/laravel-doctrine/wiki/How-It-Works)
-  1. [Basics](https://github.com/mitchellvanw/laravel-doctrine/wiki/Basics)
-  2. [Entity Manager](https://github.com/mitchellvanw/laravel-doctrine/wiki/Entity-Manager)
-  3. [Timestamps](https://github.com/mitchellvanw/laravel-doctrine/wiki/Timestamps)
-  4. [Soft Deleting](https://github.com/mitchellvanw/laravel-doctrine/wiki/Soft-Deleting)
-  5. [Authentication](https://github.com/mitchellvanw/laravel-doctrine/wiki/Authentication)
-3. [Schemas](https://github.com/mitchellvanw/laravel-doctrine/wiki/Schemas)
-4. [Doctrine Configuration](https://github.com/mitchellvanw/laravel-doctrine/wiki/Doctrine-Configuration)
-  1. [Metadata Configuration](https://github.com/mitchellvanw/laravel-doctrine/wiki/Metadata-Configuration)
-  2. [Annotation Reader](https://github.com/mitchellvanw/laravel-doctrine/wiki/Annotation-Reader)
-  3. [Metadata](https://github.com/mitchellvanw/laravel-doctrine/wiki/Metadata)
-5. [MIT License](https://github.com/mitchellvanw/laravel-doctrine/blob/master/LICENSE)
+### Issues?
 
-## Caveats
+If you have issues **related to changes made in this forked version** please open an issue **[on this repository](https://github.com/FoxxMD/laravel-doctrine/issues)**.
 
-At the moment Doctrine\ORM version 2.5 is still in beta. As a result the composer install may require you to change
-the `minimum-stability` in your `composer.json` to `dev`.
+If your issue is general or related to functionality that exists in the original repo [please direct your questions there](https://github.com/mitchellvanw/laravel-doctrine/issues).
 
-If you don't want to affect the stability of the rest of the packages, you can add the following property in your `composer.json`:
+## Forked Changes Improvements and Functionality
 
-```
-"prefer-stable": true
-```
+1. [What's New?](#whats-new)
+2. [Installation](#installation)
+3. [Using different metadata drivers](#using-different-metadata-drivers)
+4. [Using multiple entity managers](#using-multiple-entity-managers)
+5. [New Doctrine Configuration Reference](#new-doctrine-configuration-reference)
+
+
+## What's New?
+
+**Fixes for Laravel 5 support**
+
+* [Fixes for native auth functionality](https://github.com/mitchellvanw/laravel-doctrine/pull/100)
+* [Loading correct contracts for `UserProvider`](https://github.com/mitchellvanw/laravel-doctrine/pull/102)
+* [Fixed service provider for l5 compatibility](https://github.com/mitchellvanw/laravel-doctrine/pull/113)
+
+**New Functionality**
+
+* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks @npmarrin !)
+* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks @evopix !)
+* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks @evopix !)
+* Prefixes for sqlite config mapping
+* Added cache:clear artisan commands
+* **Backwards compatibility with all current doctrine configs using annotations**
 
 ## Installation
 
 Begin by installing the package through Composer. Edit your project's `composer.json` to require `mitchellvanw/laravel-doctrine`.
 
-> This package is still in it's early stages, but fully functional. Is it possible that the API might change slightly, no drastic changes.
-
 ```php
 "require": {
-    "mitchellvanw/laravel-doctrine": "1.*"
-}
+    "mitchellvanw/laravel-doctrine": "dev-l5",
+    "doctrine/orm": "2.5.*@dev"
+},
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/FoxxMD/laravel-doctrine.git"
+    }
+  ]
 ```
 
 Next use Composer to update your project from the the Terminal:
@@ -53,8 +61,16 @@ Next use Composer to update your project from the the Terminal:
 php composer.phar update
 ```
 
-Once the package has been installed you'll need to add the service provider. Open your `app/config/app.php` configuration file, and add a 
-new item to the `providers` array.
+**Caveats**
+
+At the moment Doctrine\ORM version 2.5 is still in beta. As a result the composer install may require you to change
+the `minimum-stability` in your `composer.json` to `dev`.
+
+If you don't want to affect the stability of the rest of the packages, you can add the following property in your `composer.json`:
+
+`"prefer-stable": true`
+
+Once the package has been installed you'll need to add the service provider. Open your `app/config/app.php` configuration file, and add a new item to the `providers` array.
 
 ```php
 'Mitch\LaravelDoctrine\LaravelDoctrineServiceProvider'
@@ -63,96 +79,115 @@ new item to the `providers` array.
 After This you'll need to add the facade. Open your `app/config/app.php` configuration file, and add a new item to the `aliases` array.
 
 ```php
-'EntityManager' => 'Mitch\LaravelDoctrine\EntityManagerFacade'
+'EntityManager' => 'Mitch\LaravelDoctrine\EntityManagerFacade',
+'RegistryManager' => 'Mitch\LaravelDoctrine\RegistryManagerFacade'
 ```
 
-And last but not least, make sure you copy the configuration file from the package into your config folder.
-
-
-## 2 Minutes
-
-This package uses the Laravel database configuration and thus it works right out of the box. With the [Entity Manager](https://github.com/mitchellvanw/laravel-doctrine/wiki/Entity-Manager) facade (or service locator) you can interact with repositories.
-It might be wise to [check out the Doctrine 2 docs](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/index.html) to know how it works.
-The little example below shows how to use the EntityManager in it simplest form.
+It's recommended to publish the package configuration.
 
 ```php
-<?php
-
-$user = new User;
-$user->setName('Mitchell');
-
-EntityManager::persist($user);
-EntityManager::flush();
+php artisan config:publish mitchellvanw/laravel-doctrine --path=vendor/mitchellvanw/laravel-doctrine/config
 ```
 
-The `User` used in the example above looks like this.
+##Using different metadata drivers
 
-```php
-<?php
+Doctrine provides [several drivers](https://doctrine-orm.readthedocs.org/en/latest/reference/metadata-drivers.html) that can be used to map table information to entity classes. For more information see [sections 19, 20, and 21 of the doctrine reference guide](https://doctrine-orm.readthedocs.org/en/latest/index.html#reference-guide).
 
-use Doctrine\ORM\Mapping AS ORM;
+**A default doctrine config will use the annotation driver. If this is all you need you can continue to use the documentation provided by [laravel-doctrine's wiki](https://github.com/mitchellvanw/laravel-doctrine/wiki).**
 
-/**
- * @ORM\Entity
- */
-class User {
+To use a different driver edit the `metadata` property of the entity manager you want to use the driver with (in `doctrine.config`)
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    'entity_managers' => [
+        'default' => [
+            ...
+            'metadata' => [
+                'simple' => false,
+                'driver' => 'yaml', //xml or yaml or annotation (ANNOTATION IS DEFAULT)
+                'paths' => [
+                    base_path('app/Models/mappings') //all base paths to mapping directories go here
+                ],
+                'extension' => '.dcm.yml' //extension for mapping files if not using simple driver
+            ],
+        ],
+      ]
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $name;
+Refer to the doctrine reference guide on how to set up each driver.
 
-    public function getId() {
-        return $this->id;
+##Using multiple entity managers
+
+
+If you use the regular `EntityManager` facade you will receive the `default` EM defined in your doctrine config. 
+To use multiple entity managers
+* Use the `RegistryManager` facade or
+* Inject `ManagerRegistry` into your controller
+
+**Using the facade**
+
+    use RegistryManager;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->_em = RegistryManager::getManager('tracking'); //gets 'tracking' EM
+        $this->_em = RegistryManager::getManager(); //gets 'default' EM
+
+        $this->inventoryRepo = $this->_em->getRepository('app\Models\Inventory');
     }
 
-    public function getName() {
-        return $this->name;
+**Using DI**
+
+    public function __construct(ManagerRegistry $reg)
+    {
+        parent::__construct();
+        $this->_em = $reg->getManager('tracking'); //gets 'tracking' EM
+        $this->_em = $reg->getManager(); //gets 'default' EM
+
+        $this->inventoryRepo = $this->_em->getRepository('app\Models\Inventory');
     }
 
-    public function setName($name) {
-        $this->name = $name;
-    }
-}
+## New Doctrine Configuration Reference
+
+A complete sample of doctrine configuration taking advantage of all new functionality, with comments.
+
 ```
-
-If you've only used Eloquent and its models this might look bloated or frightening, but it's actually very simple. Let me break the class down.
-
-```php
-<?php
-
-use Doctrine\ORM\Mapping AS ORM;
-
-/**
- * @ORM\Entity
- * @ORM\Table(name="users")
- */
-class User {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
-
-    /**
-     * @ORM\Column(type="string")
-     */
-    private $name;
-}
+return [
+    'default_connection' => 'default',
+    'entity_managers' => [
+        'default' => [ //MUST have an entity_managers entry for 'default'
+            'connection' => 'rdsConnection',
+            'cache_provider' => null,
+            'repository' => 'Doctrine\ORM\EntityRepository',
+            'logger' => null,
+            'metadata' => [
+                'simple' => false,
+                'driver' => 'yaml', //xml or yaml or annotation (ANNOTATION IS DEFAULT)
+                'paths' => [
+                    base_path('app/Models/mappings') //all base paths to mapping directories go here
+                ],
+                'extension' => '.dcm.yml' //extension for mapping files if not using simple driver
+            ],
+        ],
+        'tracking' => [
+            'connection' => 'trackingConnection',
+            'cache_provider' => null,
+            'repository' => 'Doctrine\ORM\EntityRepository',
+            'simple_annotations' => false,
+            'logger' => null,
+            'metadata' => [
+                'simple' => false,
+                'driver' => 'annotation'
+                //paths is not necessary for annotation
+            ],
+        ],
+    ],
+    'proxy' => [
+        'auto_generate' => true, //create proxy files automatically (turn off for production)
+        'directory' => base_path('storage/proxies'), //store them outside of default directory
+        'namespace' => null
+    ],
+    //'cache_provider' => 'apc',
+    //'logger' => new \Doctrine\DBAL\Logging\EchoSQLLogger()
+];
 ```
-
-The only thing that's actually important in this `entity` are the properties. This shows you which data the `entity` holds.
-
-With Doctrine 2 you can't interact with database by using the entity `User`. You'll have to use [Entity Manager](https://github.com/mitchellvanw/laravel-doctrine/wiki/Entity-Manager) and `repositories`.
-This does create less overhead since your entities aren't extending the whole Eloquent `model` class. Which can dramatically slow down your application a lot if you're working with thousands or millions of records.
 
 ## License
 
