@@ -12,6 +12,7 @@ As this is a **forked version** [the documentation](https://github.com/mitchellv
 2. [Installation](#installation)
 3. [Using different metadata drivers](#using-different-metadata-drivers)
 4. [Using multiple entity managers](#using-multiple-entity-managers)
+5. [Using DoctrineExtensions](#using-doctrineextensions)
 5. [New Doctrine Configuration Reference](#new-doctrine-configuration-reference)
 6. [Issues and Contributing](#issues-and-contributing)
 
@@ -139,51 +140,96 @@ To use multiple entity managers
 
         $this->inventoryRepo = $this->_em->getRepository('app\Models\Inventory');
     }
+    
+## Using DoctrineExtensions
+
+[DoctrineExtensions](https://github.com/beberlei/DoctrineExtensions) is a set of extensions to Doctrine 2 that add support for additional query functions available in MySQL and Oracle. To learn more about what additional functionality is added visit [the package's github page](https://github.com/beberlei/DoctrineExtensions).
+
+To use DoctrineExtensions install the package with composer:
+
+    composer require beberlei/DoctrineExtensions
+    
+Configuring extensions is easy and follows the pattern used by [DoctrineExtensions in its own config](https://github.com/beberlei/DoctrineExtensions/blob/master/config/mysql.yml). 
+In your doctrine config simply add a `dql` array to every entity manager you want extensions accessible from or add the array to the top-level of your configuration to have it applied to all entity managers.
+
+    'dql' => [
+        'numeric_functions' => [
+            'ROUND' => 'DoctrineExtensions\Query\Mysql\Round',
+            'POWER' => 'DoctrineExtensions\Query\Mysql\Power'
+            ...
+        ],
+        'string_functions' => [
+            'REPLACE' => 'DoctrineExtensions\Query\Mysql\Replace'
+            ...
+        ],
+        'datetime_functions' => [
+            'DATE' => 'DoctrineExtensions\Query\Mysql\Date'
+            ...
+        ]
+    ]
+
+That's it! Use DoctrineExtensions as you normally would.
 
 ## New Doctrine Configuration Reference
 
 A complete sample of doctrine configuration taking advantage of all new functionality, with comments.
 
-```
-return [
-    'default_connection' => 'default',
-    'entity_managers' => [
-        'default' => [ //MUST have an entity_managers entry for 'default'
-            'connection' => 'rdsConnection',
-            'cache_provider' => null,
-            'repository' => 'Doctrine\ORM\EntityRepository',
-            'logger' => null,
-            'metadata' => [
-                'simple' => false,
-                'driver' => 'yaml', //xml or yaml or annotation (ANNOTATION IS DEFAULT)
-                'paths' => [
-                    base_path('app/Models/mappings') //all base paths to mapping directories go here
+    return [
+        'default_connection' => 'default',
+        'entity_managers' => [
+            'default' => [ //MUST have an entity_managers entry for 'default'
+                'connection' => 'rdsConnection',
+                'cache_provider' => null,
+                'repository' => 'Doctrine\ORM\EntityRepository',
+                'logger' => null,
+                'metadata' => [
+                    'simple' => false,
+                    'driver' => 'yaml', //xml or yaml or annotation (ANNOTATION IS DEFAULT)
+                    'paths' => [
+                        base_path('app/Models/mappings') //all base paths to mapping directories go here
+                    ],
+                    'extension' => '.dcm.yml' //extension for mapping files if not using simple driver
                 ],
-                'extension' => '.dcm.yml' //extension for mapping files if not using simple driver
+                //Only usable if DoctrineExtensions is installed
+                /*'dql' => [
+                    'numeric_functions' => [
+                        'ROUND' => 'DoctrineExtensions\Query\Mysql\Round',
+                        'POWER' => 'DoctrineExtensions\Query\Mysql\Power'
+                        ...
+                    ],
+                    'string_functions' => [
+                        'REPLACE' => 'DoctrineExtensions\Query\Mysql\Replace'
+                        ...
+                    ],
+                    'datetime_functions' => [
+                        'DATE' => 'DoctrineExtensions\Query\Mysql\Date'
+                        ...
+                    ]
+                ]*/
+            ],
+            'tracking' => [
+                'connection' => 'trackingConnection',
+                'cache_provider' => null,
+                'repository' => 'Doctrine\ORM\EntityRepository',
+                'simple_annotations' => false,
+                'logger' => null,
+                'metadata' => [
+                    'simple' => false,
+                    'driver' => 'annotation'
+                    //paths is not necessary for annotation
+                ],
             ],
         ],
-        'tracking' => [
-            'connection' => 'trackingConnection',
-            'cache_provider' => null,
-            'repository' => 'Doctrine\ORM\EntityRepository',
-            'simple_annotations' => false,
-            'logger' => null,
-            'metadata' => [
-                'simple' => false,
-                'driver' => 'annotation'
-                //paths is not necessary for annotation
-            ],
+        'proxy' => [
+            'auto_generate' => true, //create proxy files automatically (turn off for production)
+            'directory' => base_path('storage/proxies'), //store them outside of default directory
+            'namespace' => null
         ],
-    ],
-    'proxy' => [
-        'auto_generate' => true, //create proxy files automatically (turn off for production)
-        'directory' => base_path('storage/proxies'), //store them outside of default directory
-        'namespace' => null
-    ],
-    //'cache_provider' => 'apc',
-    //'logger' => new \Doctrine\DBAL\Logging\EchoSQLLogger()
-];
-```
+        //'cache_provider' => 'apc',
+        //'logger' => new \Doctrine\DBAL\Logging\EchoSQLLogger()
+        //'dql' => ...
+    ];
+
 
 #Issues and Contributing
 
