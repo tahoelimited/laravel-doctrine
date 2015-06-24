@@ -6,7 +6,7 @@ A **forked implementation of [laravel-doctrine](https://github.com/mitchellvanw/
 
 As this is a **forked version** [the documentation](https://github.com/mitchellvanw/laravel-doctrine) still applies to most of the package. Please read [the original documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) and [README](https://github.com/mitchellvanw/laravel-doctrine) before using this fork.
 
-## Forked Changes Improvements and Functionality
+## Forked Changes, Improvements, and Functionality
 
 1. [What's New?](#whats-new)
 2. [Installation](#installation)
@@ -21,14 +21,15 @@ As this is a **forked version** [the documentation](https://github.com/mitchellv
 **Fixes for Laravel 5 support**
 
 * [Fixes for native auth functionality](https://github.com/mitchellvanw/laravel-doctrine/pull/100)
-* [Loading correct contracts for `UserProvider`](https://github.com/mitchellvanw/laravel-doctrine/pull/102)
+* [Loading correct contracts for `UserProvider`](https://github.com/mitchellvanw/laravel-doctrine/pull/102) (and [here](https://github.com/mitchellvanw/laravel-doctrine/pull/117) and [here](https://github.com/mitchellvanw/laravel-doctrine/pull/106))
 * [Fixed service provider for l5 compatibility](https://github.com/mitchellvanw/laravel-doctrine/pull/113)
+* [Missing use statement](https://github.com/mitchellvanw/laravel-doctrine/pull/110)
 
 **New Functionality**
 
-* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks [npmarrin!](https://github.com/npmarrin))
-* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks [evopix!](https://github.com/evopix))
-* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks [evopix!](https://github.com/evopix))
+* [Support for multiple entity managers](https://github.com/mitchellvanw/laravel-doctrine/pull/55) so you can use different db connections (thanks [**npmarrin!**](https://github.com/npmarrin))
+* [Support for standard and simple drivers (XML, YAML, or annotations)](https://github.com/FoxxMD/laravel-doctrine/pull/3)   (thanks [**evopix!**](https://github.com/evopix))
+* [Migrations and mapping conversion console commands](https://github.com/FoxxMD/laravel-doctrine/pull/4)  (thanks [**evopix!**](https://github.com/evopix))
 * Prefixes for sqlite config mapping
 * Added cache:clear artisan commands
 * **Backwards compatibility with all current doctrine configs using annotations**
@@ -88,7 +89,7 @@ php artisan config:publish mitchellvanw/laravel-doctrine --path=vendor/mitchellv
 
 Doctrine provides [several drivers](https://doctrine-orm.readthedocs.org/en/latest/reference/metadata-drivers.html) that can be used to map table information to entity classes. For more information see [sections 19, 20, and 21 of the doctrine reference guide](https://doctrine-orm.readthedocs.org/en/latest/index.html#reference-guide).
 
-**A default doctrine config will use the annotation driver. If this is all you need you can continue to use the documentation provided by [laravel-doctrine's wiki](https://github.com/mitchellvanw/laravel-doctrine/wiki).**
+**A default doctrine config will use the annotation driver. This is the way laravel-doctrine works out of the box. If this is all you need you can continue to use the documentation provided by [laravel-doctrine's wiki](https://github.com/mitchellvanw/laravel-doctrine/wiki/Doctrine-Configuration).**
 
 To use a different driver edit the `metadata` property of the entity manager you want to use the driver with (in `doctrine.config`)
 
