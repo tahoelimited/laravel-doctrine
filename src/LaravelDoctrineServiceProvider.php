@@ -121,6 +121,25 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
         });
     }
 
+    public function setDoctrineExtension($metadata, $dql){
+        if(!is_null($dql) && !empty($dql)){
+            //crude check to see if package is installed so we can give a helpful error message
+            if(!file_exists(base_path() . '/vendor/beberlei/DoctrineExtensions/composer.json')){
+                throw new RuntimeException('DoctrineExtensions is not installed!');
+            }
+            //check for function arrays and load them
+            if(isset($dql['datetime_functions'])){
+                $metadata->setCustomDatetimeFunctions($dql['datetime_functions']);
+            }
+            if(isset($dql['numeric_functions'])){
+                $metadata->setCustomNumericFunctions($dql['numeric_functions']);
+            }
+            if(isset($dql['string_functions'])){
+                $metadata->setCustomStringFunctions($dql['string_functions']);
+            }
+        }
+    }
+
     private function createMetadataConfiguration(
         array $config,
         $isDevMode = false,
@@ -129,7 +148,8 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
         $autoGenerateProxyClasses = false,
         $proxyNamespace = null,
         $repository = 'Doctrine\ORM\EntityRepository',
-        $logger = null
+        $logger = null,
+        $dql = null
     ) {
         $metadata = Setup::createConfiguration(
             $isDevMode,
@@ -147,6 +167,8 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
 
         $driver = $this->createMetadataDriver($metadata, $config);
         $metadata->setMetadataDriverImpl($driver);
+
+        $this->setDoctrineExtension($metadata, $dql);
 
         return $metadata;
     }
@@ -235,6 +257,7 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
             $cacheProvider = isset($managerConfig['cache_provider']) ? $managerConfig['cache_provider'] : $config['cache_provider'];
             $repository = isset($managerConfig['repository']) ? $managerConfig['repository'] : $config['repository'];
             $logger = isset($managerConfig['logger']) ? $managerConfig['logger'] : $config['logger'];
+            $dql = isset($managerConfig['dql']) ? $managerConfig['dql'] : $config['dql'];
 
             if(!isset($managerConfig['metadata']['paths'])){ //backwards compatibility
                 $paths = [];
@@ -260,7 +283,8 @@ class LaravelDoctrineServiceProvider extends ServiceProvider
                 $config['proxy']['auto_generate'],
                 $proxyNamespace,
                 $repository,
-                $logger
+                $logger,
+                $dql
             );
 
             $connection = DriverManager::getConnection(

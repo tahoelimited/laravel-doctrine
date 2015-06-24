@@ -33,6 +33,8 @@ return [
 
     'logger' => null,
 
+    'dql' => null,
+
     'migrations' => [
         'directory' => base_path('database/doctrine/migrations'),
         'namespace' => 'App\Migrations'
