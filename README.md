@@ -2,6 +2,9 @@
 
 A **forked implementation of [laravel-doctrine](https://github.com/mitchellvanw/laravel-doctrine)** that melts with Laravel 5.
 
+# This repository is deprecated and no longer maintained. Please use [laravel-doctrine/orm](https://github.com/laravel-doctrine/orm) instead!
+
+
 ## Documentation
 
 As this is a **forked version** [the documentation](https://github.com/mitchellvanw/laravel-doctrine) still applies to most of the package. Please read [the original documentation](https://github.com/mitchellvanw/laravel-doctrine/wiki) and [README](https://github.com/mitchellvanw/laravel-doctrine) before using this fork.
